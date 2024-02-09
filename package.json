@@ -1,0 +1,33 @@
+{
+    "name": "Empolyee_Entry",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview"
+    },
+    "dependencies": {
+        "@emotion/react": "^11.11.3",
+        "@emotion/styled": "^11.11.0",
+        "@fontsource/roboto": "^5.0.8",
+        "@material-ui/core": "^4.12.4",
+        "@mui/material": "^5.15.7",
+        "@mui/styled-engine-sc": "^6.0.0-alpha.15",
+        "@mui/x-data-grid": "^6.19.3",
+        "@mui/x-date-pickers": "^6.19.3",
+        "dayjs": "^1.11.10",
+        "material-table": "^2.0.5",
+        "react-hook-form": "^7.50.1",
+        "react-router-dom": "^6.22.0",
+        "styled-components": "^6.1.8",
+        "jsdom": "^23.0.1",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0"
+    },
+    "devDependencies": {
+        "@vitejs/plugin-react": "^4.2.1",
+        "vite": "^5.1.0"
+    }
+}
