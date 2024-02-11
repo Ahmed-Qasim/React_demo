@@ -12,30 +12,30 @@ import { useForm, Controller } from "react-hook-form";
 import {
     addEmployee,
     getEmployeeById,
+    getJobCodes,
     updateEmployee,
 } from "../../Services/API.jsx";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import db from "../../Services/db.jsx";
-import { useState } from "react";
 
 dayjs.locale("en");
 
 const status = [
     {
         value: "valid",
-        label: "valid",
+        label: "Valid",
     },
     {
         value: "unvalid",
-        label: "unvalid",
+        label: "Unvalid",
     },
 ];
 
 function EntryForm() {
     const navigate = useNavigate();
-
+    const [jobCodes, setJobCodes] = useState(null);
     const { id } = useParams();
 
     const {
@@ -47,9 +47,10 @@ function EntryForm() {
     } = useForm();
 
     useEffect(() => {
+        const jobCodes = getJobCodes();
+        setJobCodes(jobCodes);
         if (id) {
             const fetchedEmp = getEmployeeById(id);
-            console.log("fetchedEmp :>> ", fetchedEmp);
             if (!fetchedEmp) {
                 //TODO: resource not found
                 navigate("/");
@@ -75,8 +76,6 @@ function EntryForm() {
             addEmployee(newData);
             navigate("/");
         }
-
-        // console.log(db);
     };
 
     return (
@@ -116,8 +115,9 @@ function EntryForm() {
                         helperText={errors?.code?.message}
                     />
 
-                    <Controller
+                    {/* <Controller
                         name="salaryStatus"
+                        defaultValue={"valid"}
                         control={control}
                         render={({ field }) => (
                             <Select {...field}>
@@ -131,11 +131,12 @@ function EntryForm() {
                                 ))}
                             </Select>
                         )}
-                    />
+                    /> */}
 
-                    {/* <TextField
+                    <TextField
                         id="outlined-basic"
                         {...register("salaryStatus")}
+                        defaultValue={"valid"}
                         select
                         label="Salary Status"
                         type="string"
@@ -146,7 +147,7 @@ function EntryForm() {
                                 {option.label}
                             </MenuItem>
                         ))}
-                    </TextField> */}
+                    </TextField>
                     <Controller
                         control={control}
                         defaultValue={dayjs()}
@@ -168,20 +169,27 @@ function EntryForm() {
                             />
                         )}
                     />
-                    <TextField
-                        id="outlined-basic"
-                        {...register("jobCode")}
-                        select
-                        label="Job Code"
-                        type="string"
-                        size="small"
-                    >
-                        {db.JobCodes.map((option) => (
-                            <MenuItem key={option.value} value={option.value}>
-                                {option.label}
-                            </MenuItem>
-                        ))}
-                    </TextField>
+                    {/* TODO: Split jobcodes into single component */}
+                    {jobCodes && (
+                        <TextField
+                            id="outlined-basic"
+                            {...register("jobCode")}
+                            select
+                            defaultValue={jobCodes[0].value}
+                            label="Job Code"
+                            type="string"
+                            size="small"
+                        >
+                            {jobCodes.map((option) => (
+                                <MenuItem
+                                    key={option.value}
+                                    value={option.value}
+                                >
+                                    {option.label}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                    )}
                     {id ? (
                         <Button
                             variant="outlined"

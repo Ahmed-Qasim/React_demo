@@ -8,14 +8,14 @@ import { DataGrid } from "@mui/x-data-grid";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import UserActions from "./UserActions";
-import { getAllEmployees,filterEmployees } from "../Services/API";
+import { getAllEmployees, filterEmployees } from "../Services/API";
 
 function CustomToolbar() {
     return (
         <GridToolbarContainer>
             <GridToolbarFilterButton />
-            <GridToolbarDensitySelector />
-            <GridToolbarExport />
+            {/* <GridToolbarDensitySelector />
+            <GridToolbarExport /> */}
         </GridToolbarContainer>
     );
 }
@@ -100,6 +100,9 @@ const EmployeeTable = () => {
     if (!rows) {
         return <>Loading...</>;
     }
+    const onFiltersChange = (test) => {
+        console.log("test :>> ", test);
+    };
     return (
         <DataGrid
             rows={rows}
@@ -117,6 +120,8 @@ const EmployeeTable = () => {
             pageSizeOptions={[5]}
             checkboxSelection
             disableRowSelectionOnClick
+            onFilterModelChange={onFiltersChange}
+            filterMode="server"
         />
     );
 };

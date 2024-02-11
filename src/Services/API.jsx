@@ -68,17 +68,27 @@ export const filterEmployees = (criteria) => {
 //Search Employees
 export const searchEmployees = (query) => {
     return database.employees.filter((employee) => {
-        const lowerCaseQuery = query.toString().toLowerCase(); 
+        const lowerCaseQuery = query.toString().toLowerCase();
         for (const key in employee) {
             if (Object.prototype.hasOwnProperty.call(employee, key)) {
                 const value = employee[key];
-                if (typeof value === 'string' && value.toLowerCase().includes(lowerCaseQuery)) {
-                    return true; 
-                } else if (typeof value === 'number' && value.toString().toLowerCase().includes(lowerCaseQuery)) {
-                    return true; 
+                if (
+                    typeof value === "string" &&
+                    value.toLowerCase().includes(lowerCaseQuery)
+                ) {
+                    return true;
+                } else if (
+                    typeof value === "number" &&
+                    value.toString().toLowerCase().includes(lowerCaseQuery)
+                ) {
+                    return true;
                 }
             }
         }
-        return false; 
+        return false;
     });
+};
+
+export const getJobCodes = () => {
+    return database.JobCodes;
 };
