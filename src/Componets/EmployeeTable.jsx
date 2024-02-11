@@ -5,10 +5,10 @@ import {
     GridToolbarDensitySelector,
 } from "@mui/x-data-grid";
 import { DataGrid } from "@mui/x-data-grid";
-//import Button from "@mui/material/Button";
+import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import UserActions from "./UserActions";
-import { getAllEmployees } from "../Services/API";
+import { getAllEmployees,filterEmployees } from "../Services/API";
 
 function CustomToolbar() {
     return (
@@ -20,7 +20,7 @@ function CustomToolbar() {
     );
 }
 
-const EmployeeFilesTable = () => {
+const EmployeeTable = () => {
     const [rows, setRows] = useState(null);
 
     const fetchEmployeeFiles = () => {
@@ -64,6 +64,9 @@ const EmployeeFilesTable = () => {
             width: 150,
             headerAlign: "center",
             align: "center",
+            renderCell: (params) => (
+                <span>{dayjs(params.value).format("DD/MM/YYYY")}</span>
+            ),
         },
 
         {
@@ -117,4 +120,4 @@ const EmployeeFilesTable = () => {
         />
     );
 };
-export default EmployeeFilesTable;
+export default EmployeeTable;

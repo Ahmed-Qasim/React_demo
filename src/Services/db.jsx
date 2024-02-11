@@ -6,7 +6,7 @@ let database = {
             name: "Ahmed",
             code: 234,
             salaryStatus: "valid",
-            hiringDate: "2024-02-07",
+            hiringDate: "2024-02-10T12:00:00Z",
             jobCode: "1334",
         },
         {
@@ -14,7 +14,7 @@ let database = {
             name: "Mohamed",
             code: 235,
             salaryStatus: "valid",
-            hiringDate: "2022-02-07",
+            hiringDate: "2024-02-10T12:00:00Z",
             jobCode: "1333",
         },
         {
@@ -22,9 +22,23 @@ let database = {
             name: "Qasim",
             code: 236,
             salaryStatus: "valid",
-            hiringDate: "2021-02-07",
+            hiringDate: "2024-02-10T12:00:00Z",
             jobCode: "1332",
         },
     ],
+    JobCodes:[
+        {
+            value: "1243",
+            label: "1243",
+        },
+        {
+            value: "5712",
+            label: "5712",
+        },
+        {
+            value: "8762",
+            label: "8762",
+        },
+    ]
 };
 export default database;

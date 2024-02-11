@@ -1,5 +1,6 @@
 import Button from "@mui/material/Button";
 import "./UserActions";
+import { Link } from "react-router-dom";
 import { deleteEmployee, getAllEmployees } from "../Services/API";
 function UserActions(props) {
     const { row, fetchEmployeeFiles } = props;
@@ -11,7 +12,14 @@ function UserActions(props) {
     };
     return (
         <div className="container">
-            <Button onClick={() => alert(id)}>Edit</Button>
+            <Button>
+                <Link
+                    to={`/entry/${id}`}
+                    style={{ textDecoration: "none", color: "blue" }}
+                >
+                    Edit
+                </Link>
+            </Button>
 
             <Button onClick={onDelete} color="error">
                 Delete

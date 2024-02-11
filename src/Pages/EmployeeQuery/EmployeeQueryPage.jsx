@@ -1,5 +1,5 @@
 import Typography from "@mui/material/Typography";
-import EmployeeFilesTable from "../../Componets/EmployeeFilesTable";
+import EmployeeTable from "../../Componets/EmployeeTable";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -47,7 +47,7 @@ function EmployeeQueryPage() {
                 <Button variant="contained" onClick={handleClick} >Add </Button>
             </Box>
 
-            <EmployeeFilesTable />
+            <EmployeeTable />
         </Container>
     );
 }

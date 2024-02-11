@@ -1,74 +1,82 @@
-import { Button, TextField, Stack, MenuItem } from "@mui/material";
+import {
+    Button,
+    TextField,
+    Stack,
+    MenuItem,
+    Select,
+    InputLabel,
+} from "@mui/material";
 import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useForm, Controller } from "react-hook-form";
-import { addEmployee, getAllEmployees } from "../../Services/API.jsx";
+import {
+    addEmployee,
+    getEmployeeById,
+    updateEmployee,
+} from "../../Services/API.jsx";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 import db from "../../Services/db.jsx";
+import { useState } from "react";
 
 dayjs.locale("en");
 
 const status = [
     {
         value: "valid",
-        label: "Valid",
+        label: "valid",
     },
     {
         value: "unvalid",
-        label: "Unvalid",
-    },
-];
-const jobCode = [
-    {
-        value: "1243",
-        label: "1243",
-    },
-    {
-        value: "5712",
-        label: "5712",
-    },
-    {
-        value: "8762",
-        label: "8762",
+        label: "unvalid",
     },
 ];
 
 function EntryForm() {
     const navigate = useNavigate();
-    const handleClick = () => {
-        navigate("/");
-    };
+
+    const { id } = useParams();
+
     const {
         register,
         handleSubmit,
+        setValue,
         control,
         formState: { errors },
     } = useForm();
-    const [maxId, setMaxId] = useState(0);
 
     useEffect(() => {
-        const existingData = getAllEmployees();
-        const maxId = Math.max(...existingData.map((employee) => employee.id));
-        setMaxId(maxId);
-        onSubmit();
-    }, []);
+        if (id) {
+            const fetchedEmp = getEmployeeById(id);
+            console.log("fetchedEmp :>> ", fetchedEmp);
+            if (!fetchedEmp) {
+                //TODO: resource not found
+                navigate("/");
+            } else {
+                Object.keys(fetchedEmp).forEach((key) => {
+                    setValue(key, fetchedEmp[key]);
+                });
+            }
+        }
+    }, [id, setValue]);
 
     const onSubmit = (data) => {
-        if (data) {
-            const formattedDate = dayjs(data.hiringDate.$d).format(
-                "DD/MM/YYYY"
-            );
-            console.log(formattedDate);
-            const newEmployee = {
-                id: maxId + 1,
-                hiringDate: formattedDate,
-                ...data,
-            };
-            addEmployee(newEmployee);
+        const newData = {
+            ...data,
+            hiringDate: dayjs(data.hiringDate).toISOString(),
+        };
+        // update
+        if (id) {
+            updateEmployee(id, newData);
+            navigate("/");
+            //create
+        } else {
+            addEmployee(newData);
+            navigate("/");
         }
 
-        console.log(db);
+        // console.log(db);
     };
 
     return (
@@ -107,7 +115,25 @@ function EntryForm() {
                         error={!!errors.code}
                         helperText={errors?.code?.message}
                     />
-                    <TextField
+
+                    <Controller
+                        name="salaryStatus"
+                        control={control}
+                        render={({ field }) => (
+                            <Select {...field}>
+                                {status.map((option) => (
+                                    <MenuItem
+                                        key={option.value}
+                                        value={option.value}
+                                    >
+                                        {option.label}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        )}
+                    />
+
+                    {/* <TextField
                         id="outlined-basic"
                         {...register("salaryStatus")}
                         select
@@ -120,10 +146,10 @@ function EntryForm() {
                                 {option.label}
                             </MenuItem>
                         ))}
-                    </TextField>
+                    </TextField> */}
                     <Controller
                         control={control}
-                        defaultValue={dayjs().startOf("D")}
+                        defaultValue={dayjs()}
                         name="hiringDate"
                         rules={{
                             required: {
@@ -137,8 +163,7 @@ function EntryForm() {
                                 disableFuture
                                 onChange={onChange}
                                 onAccept={onChange}
-                                format="DD/MM/YYYY"
-                                value={value}
+                                value={dayjs(value)}
                                 inputRef={ref}
                             />
                         )}
@@ -151,23 +176,29 @@ function EntryForm() {
                         type="string"
                         size="small"
                     >
-                        {jobCode.map((option) => (
+                        {db.JobCodes.map((option) => (
                             <MenuItem key={option.value} value={option.value}>
                                 {option.label}
                             </MenuItem>
                         ))}
                     </TextField>
-
-                    <Button variant="outlined" color="primary" type="submit">
-                        Save
-                    </Button>
-                    <Button
-                        variant="outlined"
-                        color="primary"
-                        onClick={handleClick}
-                    >
-                        Query
-                    </Button>
+                    {id ? (
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            type="submit"
+                        >
+                            Update
+                        </Button>
+                    ) : (
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            type="submit"
+                        >
+                            Create
+                        </Button>
+                    )}
                 </Stack>
             </form>
         </>
