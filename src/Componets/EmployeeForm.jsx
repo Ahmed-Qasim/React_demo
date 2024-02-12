@@ -1,11 +1,4 @@
-import {
-    Button,
-    TextField,
-    Stack,
-    MenuItem,
-    Select,
-    InputLabel,
-} from "@mui/material";
+import { Button, TextField, Stack, MenuItem } from "@mui/material";
 import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useForm, Controller } from "react-hook-form";
@@ -14,11 +7,10 @@ import {
     getEmployeeById,
     getJobCodes,
     updateEmployee,
-} from "../../Services/API.jsx";
+} from "../Services/API.jsx";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import db from "../../Services/db.jsx";
 
 dayjs.locale("en");
 
@@ -48,12 +40,14 @@ function EntryForm() {
 
     useEffect(() => {
         const jobCodes = getJobCodes();
+
         setJobCodes(jobCodes);
         if (id) {
             const fetchedEmp = getEmployeeById(id);
             if (!fetchedEmp) {
                 //TODO: resource not found
-                navigate("/");
+
+                throw new Error("Employee not found");
             } else {
                 Object.keys(fetchedEmp).forEach((key) => {
                     setValue(key, fetchedEmp[key]);
@@ -70,18 +64,27 @@ function EntryForm() {
         // update
         if (id) {
             updateEmployee(id, newData);
-            navigate("/");
             //create
         } else {
             addEmployee(newData);
-            navigate("/");
         }
+        navigate("/");
     };
 
     return (
         <>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <Stack width={450} spacing={2}>
+                <Stack
+                    width={500}
+                    spacing={2}
+                    sx={{
+                        borderRadius: "10px",
+                        borderColor: "text.disabled",
+                        padding: 5,
+                        border: 1,
+                        bgcolor: "background.paper",
+                    }}
+                >
                     <TextField
                         id="outlined-basic"
                         {...register("name", {
@@ -100,12 +103,12 @@ function EntryForm() {
                     />
                     <TextField
                         {...register("code", {
-                            required: "Code is required",
-                            maxLength: {
-                                value: 5,
-                                message:
-                                    "Code must be at most 5 characters long",
-                            },
+                            // required: "Code is required",
+                            // maxLength: {
+                            //     value: 5,
+                            //     message:
+                            //         "Code must be at most 5 characters long",
+                            // },
                         })}
                         id="outlined-basic"
                         label="Code"
@@ -115,28 +118,10 @@ function EntryForm() {
                         helperText={errors?.code?.message}
                     />
 
-                    {/* <Controller
-                        name="salaryStatus"
-                        defaultValue={"valid"}
-                        control={control}
-                        render={({ field }) => (
-                            <Select {...field}>
-                                {status.map((option) => (
-                                    <MenuItem
-                                        key={option.value}
-                                        value={option.value}
-                                    >
-                                        {option.label}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        )}
-                    /> */}
-
                     <TextField
                         id="outlined-basic"
                         {...register("salaryStatus")}
-                        defaultValue={"valid"}
+                        defaultValue={""}
                         select
                         label="Salary Status"
                         type="string"
@@ -148,6 +133,7 @@ function EntryForm() {
                             </MenuItem>
                         ))}
                     </TextField>
+
                     <Controller
                         control={control}
                         defaultValue={dayjs()}

@@ -1,7 +1,7 @@
-import Button from "@mui/material/Button";
+import { Box,Button} from "@mui/material";
 import "./UserActions";
 import { Link } from "react-router-dom";
-import { deleteEmployee, getAllEmployees } from "../Services/API";
+import { deleteEmployee } from "../../Services/API";
 function UserActions(props) {
     const { row, fetchEmployeeFiles } = props;
     const id = row.id;
@@ -11,7 +11,7 @@ function UserActions(props) {
         fetchEmployeeFiles();
     };
     return (
-        <div className="container">
+        <Box>
             <Button>
                 <Link
                     to={`/entry/${id}`}
@@ -24,7 +24,7 @@ function UserActions(props) {
             <Button onClick={onDelete} color="error">
                 Delete
             </Button>
-        </div>
+        </Box>
     );
 }
 

@@ -1,38 +1,46 @@
 import {
     GridToolbarContainer,
     GridToolbarFilterButton,
-    GridToolbarExport,
-    GridToolbarDensitySelector,
 } from "@mui/x-data-grid";
 import { DataGrid } from "@mui/x-data-grid";
+
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import UserActions from "./UserActions";
-import { getAllEmployees, filterEmployees } from "../Services/API";
+import { getEmployees } from "../../Services/API";
 
 function CustomToolbar() {
     return (
         <GridToolbarContainer>
             <GridToolbarFilterButton />
-            {/* <GridToolbarDensitySelector />
-            <GridToolbarExport /> */}
         </GridToolbarContainer>
     );
+}
+//extract data from fliter modal
+function mapItemsToFilterObject(items) {
+    const filterObject = {};
+    items.forEach((item) => {
+        filterObject[item.field] = item.value;
+    });
+    return filterObject;
 }
 
 const EmployeeTable = () => {
     const [rows, setRows] = useState(null);
 
-    const fetchEmployeeFiles = () => {
-        const employeeFiles = getAllEmployees();
+    const fetchEmployeeFiles = (filterObject) => {
+        const employeeFiles = getEmployees(filterObject);
+        console.log("employeeFiles :>> ", employeeFiles);
         setRows(employeeFiles);
     };
+
     useEffect(() => {
+        console.log("hi");
         fetchEmployeeFiles();
     }, []);
 
     const columns = [
-        { field: "id", headerName: "ID", width: 90 },
+        { field: "id", headerName: "ID", width: 90, filterable: false },
         {
             field: "code",
             headerName: "Code",
@@ -97,12 +105,15 @@ const EmployeeTable = () => {
             },
         },
     ];
+
     if (!rows) {
         return <>Loading...</>;
     }
-    const onFiltersChange = (test) => {
-        console.log("test :>> ", test);
+    const onFiltersChange = (filters) => {
+        const filterObject = mapItemsToFilterObject(filters.items);
+        fetchEmployeeFiles(filterObject);
     };
+
     return (
         <DataGrid
             rows={rows}
@@ -121,6 +132,7 @@ const EmployeeTable = () => {
             checkboxSelection
             disableRowSelectionOnClick
             onFilterModelChange={onFiltersChange}
+            on
             filterMode="server"
         />
     );

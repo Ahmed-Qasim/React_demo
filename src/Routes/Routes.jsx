@@ -1,16 +1,17 @@
 import { createBrowserRouter } from "react-router-dom";
-import EmployeeQueryPage from "../Pages/EmployeeQuery/EmployeeQueryPage";
-import EmployeeEntryPage from "../Pages/EmployeeEntry/EmployeeEntryPage";
-//import ErrorPage from "../Pages/ErrorPage/ErrorPage";
+import EmployeeTablePage from "../Pages/EmployeeTable/EmployeeTablePage";
+import EmployeeFormPage from "../Pages/EmployeeForm/EmployeeFormPage";
+import ErrorPage from "../Pages/Error/ErrorPage";
 export const router = createBrowserRouter([
     {
         path: "/",
-        element: <EmployeeQueryPage />,
-        // errorElement: <ErrorPage />,
+        element: <EmployeeTablePage />,
+        errorElement: <ErrorPage />,
     },
     {
         path: "entry/:id?",
-        element: <EmployeeEntryPage />,
+        element: <EmployeeFormPage />,
+        errorElement: <ErrorPage />,
     },
 ]);
 export default router;

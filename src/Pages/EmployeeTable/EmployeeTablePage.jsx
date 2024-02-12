@@ -1,12 +1,12 @@
 import Typography from "@mui/material/Typography";
-import EmployeeTable from "../../Componets/EmployeeTable";
+import EmployeeTable from "../../Componets/Table/EmployeeTable";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import {useNavigate} from  'react-router';
 
 
-function EmployeeQueryPage() {
+function EmployeeTablePage() {
 
     const navigate = useNavigate();
 
@@ -52,4 +52,4 @@ function EmployeeQueryPage() {
     );
 }
 
-export default EmployeeQueryPage;
+export default EmployeeTablePage;
