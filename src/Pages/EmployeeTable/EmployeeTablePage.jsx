@@ -3,15 +3,17 @@ import EmployeeTable from "../../Componets/Table/EmployeeTable";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import {useNavigate} from  'react-router';
-
+import { useNavigate } from "react-router";
 
 function EmployeeTablePage() {
-
     const navigate = useNavigate();
+    const navigateTest = useNavigate();
 
+    const handleTest = () => {
+        navigateTest("/test");
+    };
     const handleClick = () => {
-      navigate('/entry');
+        navigate("/entry");
     };
     return (
         <Container
@@ -44,10 +46,15 @@ function EmployeeTablePage() {
                     paddingBottom: "10px",
                 }}
             >
-                <Button variant="contained" onClick={handleClick} >Add </Button>
+                <Button variant="contained" onClick={handleClick}>
+                    Add{" "}
+                </Button>
             </Box>
 
             <EmployeeTable />
+            <Button variant="contained" onClick={handleTest}>
+                test
+            </Button>
         </Container>
     );
 }
