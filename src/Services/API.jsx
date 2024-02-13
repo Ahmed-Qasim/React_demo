@@ -23,23 +23,26 @@ export const addEmployee = (employee) => {
     const newEmployees = [...database.employees];
 
     const id = Math.max(...newEmployees.map((employee) => employee.id)) + 1;
-
+    console.log("employee.code :>> ", employee.code);
     let code;
     if (employee.code != null && employee.code !== "") {
+        console.log("iam in ");
         code = employee.code;
         code = parseInt(employee.code);
     } else {
+        console.log("else");
         code = Math.max(...newEmployees.map((employee) => employee.code)) + 1;
         console.log(code);
     }
     const date = employee.hiringDate;
     const newEmployee = {
+        ...employee,
         id: id,
         code: code,
         hiringDate: date,
-        ...employee,
+        
     };
-
+    console.log("newEmployee :>> ", newEmployee);
     newEmployees.push(newEmployee);
     const newDatabase = {
         ...database,
@@ -68,7 +71,7 @@ export const updateEmployee = (Id, updatedEmployee) => {
             employees: newEmployees,
         };
         saveDatabase(newDatabase);
-    } 
+    }
 };
 
 // Delete Employee
@@ -114,7 +117,6 @@ export const getEmployees = (filterObject) => {
     // Filter the employees based on the filter object
     return employees.filter((employee) => {
         return Object.entries(filterObject).every(([key, value]) => {
-            
             if (!employee.hasOwnProperty(key)) {
                 return false;
             }
