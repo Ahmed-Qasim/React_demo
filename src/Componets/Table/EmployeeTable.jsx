@@ -30,12 +30,12 @@ const EmployeeTable = () => {
 
     const fetchEmployeeFiles = (filterObject) => {
         const employeeFiles = getEmployees(filterObject);
-        console.log("employeeFiles :>> ", employeeFiles);
+     
         setRows(employeeFiles);
     };
 
     useEffect(() => {
-        console.log("hi");
+       
         fetchEmployeeFiles();
     }, []);
 

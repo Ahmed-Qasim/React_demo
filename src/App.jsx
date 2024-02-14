@@ -1,12 +1,21 @@
-import Outlet from "react-router-dom";
-import "./App.css";
+import React, { useEffect } from "react";
+import { RouterProvider } from "react-router-dom";
+import router from "./Routes/Routes";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import createMockServer from "./Services/server";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+const adapter = AdapterDayjs;
 
-function App() {
+const App = () => {
+    useEffect(() => {
+        createMockServer();
+    }, []);
+
     return (
-        <>
-            <Outlet />
-        </>
+        <LocalizationProvider dateAdapter={adapter}>
+            <RouterProvider router={router} />
+        </LocalizationProvider>
     );
-}
+};
 
 export default App;

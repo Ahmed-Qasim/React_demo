@@ -1,4 +1,5 @@
 import mockData from "./db";
+import data from "../../data.json"
 const DATABASE_KEY = "joberDatabase";
 const initializeDatabase = () => {
     const localDatabaseString = localStorage.getItem(DATABASE_KEY);
