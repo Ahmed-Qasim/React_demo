@@ -1,7 +1,8 @@
-import { Button, TextField, Stack, MenuItem } from "@mui/material";
+import { Button, TextField, Stack, MenuItem, Box } from "@mui/material";
 import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useForm, Controller } from "react-hook-form";
+import LinearProgress from "@mui/material/LinearProgress";
 import {
     addEmployee,
     getEmployeeById,
@@ -26,6 +27,7 @@ const status = [
 ];
 
 function EntryForm() {
+    const [loadingForm, setLoadingForm] = useState(true);
     const navigate = useNavigate();
     const [jobCodes, setJobCodes] = useState(null);
     const { id } = useParams();
@@ -36,25 +38,54 @@ function EntryForm() {
         setValue,
         control,
         formState: { errors },
-    } = useForm();
+    } = useForm({
+        defaultValues: {
+            salaryStatus: "unvalid",
+        },
+    });
+
+    const getJobCodes = () => {
+        fetch("/api/jobCodes")
+            .then((res) => res.json())
+            .then((data) => {
+                setJobCodes(data.jobCodes);
+            });
+    };
 
     useEffect(() => {
-        const jobCodes = getJobCodes();
+        getJobCodes();
 
-        setJobCodes(jobCodes);
         if (id) {
-            const fetchedEmp = getEmployeeById(id);
-            if (!fetchedEmp) {
-                //TODO: resource not found
-
-                throw new Error("Employee not found");
-            } else {
-                Object.keys(fetchedEmp).forEach((key) => {
-                    setValue(key, fetchedEmp[key]);
-                });
-            }
+            getEmpById(id);
         }
-    }, [id, setValue]);
+    }, [id]);
+
+    const getEmpById = (id) => {
+        fetch(`/api/employees/${id}`)
+            .then((res) => res.json())
+            .then((data) => {
+                const employee = data.employee;
+                Object.keys(employee).forEach((key) => {
+                    setValue(key, employee[key]);
+                });
+                setLoadingForm(false);
+            });
+    };
+
+    const updateEmp = (id, data) => {
+        fetch(`/api/employees/${id}`, {
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            method: "PUT",
+            body: JSON.stringify(data),
+        })
+            .then((res) => res.json())
+            .then(() => {
+                navigate("/");
+            });
+    };
 
     const createEmp = (data) => {
         fetch("/api/employees", {
@@ -66,8 +97,7 @@ function EntryForm() {
             body: JSON.stringify(data),
         })
             .then((res) => res.json())
-            .then((data) => {
-                console.log("data :>> ", data);
+            .then(() => {
                 navigate("/");
             });
     };
@@ -79,13 +109,19 @@ function EntryForm() {
         };
         // update
         if (id) {
-            updateEmployee(id, newData);
+            updateEmp(id, newData);
             //create
         } else {
             createEmp(newData);
         }
     };
-
+    if (loadingForm) {
+        return (
+            <Box sx={{ width: "100%" }}>
+                <LinearProgress />
+            </Box>
+        );
+    }
     return (
         <>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -134,13 +170,12 @@ function EntryForm() {
                     />
 
                     <TextField
-                        id="outlined-basic"
-                        {...register("salaryStatus")}
-                        defaultValue={""}
                         select
                         label="Salary Status"
                         type="string"
                         size="small"
+                        {...register("salaryStatus")}
+                        defaultValue="unvalid"
                     >
                         {status.map((option) => (
                             <MenuItem key={option.value} value={option.value}>

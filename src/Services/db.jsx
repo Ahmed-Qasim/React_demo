@@ -26,7 +26,7 @@ let database = {
             jobCode: "8762",
         },
     ],
-    JobCodes: [
+    jobCodes: [
         {
             value: "1243",
             label: "1243",

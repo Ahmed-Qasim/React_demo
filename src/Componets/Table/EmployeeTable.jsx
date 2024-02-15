@@ -3,12 +3,11 @@ import {
     GridToolbarFilterButton,
 } from "@mui/x-data-grid";
 import { DataGrid } from "@mui/x-data-grid";
-
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import UserActions from "./UserActions";
-import { getEmployees } from "../../Services/API";
 import { isEmpty } from "../../utils";
+import LinearProgress from "@mui/material/LinearProgress";
 
 function CustomToolbar() {
     return (
@@ -27,7 +26,8 @@ function mapItemsToFilterObject(items) {
 }
 
 const EmployeeTable = () => {
-    const [rows, setRows] = useState(null);
+    const [rows, setRows] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const fetchEmployeeFiles = async (filterObject) => {
         const URL =
@@ -36,16 +36,10 @@ const EmployeeTable = () => {
                 ? "?" + new URLSearchParams(filterObject)
                 : "");
 
-        // fetch(URL)
-        //     .then((res) => res.json())
-        //     .then((data) => {
-        //         console.log(data);
-        //         setRows(data.employees);
-        //     });
-
         const response = await fetch(URL);
         const data = await response.json();
         setRows(data.employees);
+        setLoading(false);
     };
 
     useEffect(() => {
@@ -119,9 +113,6 @@ const EmployeeTable = () => {
         },
     ];
 
-    if (!rows) {
-        return <>Loading...</>;
-    }
     const onFiltersChange = (filters) => {
         const filterObject = mapItemsToFilterObject(filters.items);
         fetchEmployeeFiles(filterObject);
@@ -133,6 +124,7 @@ const EmployeeTable = () => {
             columns={columns}
             slots={{
                 toolbar: CustomToolbar,
+                loadingOverlay: LinearProgress,
             }}
             initialState={{
                 pagination: {
@@ -141,6 +133,7 @@ const EmployeeTable = () => {
                     },
                 },
             }}
+            loading={loading}
             pageSizeOptions={[5]}
             checkboxSelection
             disableRowSelectionOnClick
