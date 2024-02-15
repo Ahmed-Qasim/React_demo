@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import UserActions from "./UserActions";
 import { getEmployees } from "../../Services/API";
+import { isEmpty } from "../../utils";
 
 function CustomToolbar() {
     return (
@@ -28,14 +29,26 @@ function mapItemsToFilterObject(items) {
 const EmployeeTable = () => {
     const [rows, setRows] = useState(null);
 
-    const fetchEmployeeFiles = (filterObject) => {
-        const employeeFiles = getEmployees(filterObject);
-     
-        setRows(employeeFiles);
+    const fetchEmployeeFiles = async (filterObject) => {
+        const URL =
+            "/api/employees" +
+            (filterObject && !isEmpty(filterObject)
+                ? "?" + new URLSearchParams(filterObject)
+                : "");
+
+        // fetch(URL)
+        //     .then((res) => res.json())
+        //     .then((data) => {
+        //         console.log(data);
+        //         setRows(data.employees);
+        //     });
+
+        const response = await fetch(URL);
+        const data = await response.json();
+        setRows(data.employees);
     };
 
     useEffect(() => {
-       
         fetchEmployeeFiles();
     }, []);
 

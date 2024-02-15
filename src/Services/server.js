@@ -1,25 +1,51 @@
 import { createServer, Model } from "miragejs";
+import { addEmployee } from "./API";
+import database from "../Services/db.jsx";
+import { isEmpty } from "../utils.js";
 
 const createMockServer = function () {
     createServer({
         models: {
-            reminder: Model,
+            employee: Model,
         },
 
         seeds(server) {
-            server.create("reminder", { text: "Walk the dog" });
-            server.create("reminder", { text: "Take out the trash" });
-            server.create("reminder", { text: "Work out" });
+            database.employees.forEach((employee) =>
+                server.create("employee", employee)
+            );
         },
         routes() {
-            this.get("/api/reminders", (schema) => {
-                return schema.reminders.all();
+            this.get("/api/employees", (schema, request) => {
+                let filter = request.queryParams;
+
+                if (!filter || isEmpty(filter)) {
+                    return schema.employees.all();
+                }
+                return schema.employees.where(filter);
             });
 
-            this.post("/api/reminders", (schema, request) => {
-                let attrs = JSON.parse(request.requestBody);
+            this.post("/api/employees", (schema, request) => {
+                let employee = JSON.parse(request.requestBody);
 
-                return schema.reminders.create(attrs);
+                if (employee.code != null && employee.code !== "") {
+                    return schema.employees.create(employee);
+                } else {
+                    let res = schema.db.employees;
+                    const code =
+                        Math.max(...res.map((employee) => employee?.code)) + 1;
+                    
+                    const newEmployee = {
+                        ...employee,
+                        code: code,
+                    };
+                    return schema.employees.create(newEmployee);
+                }
+            });
+
+            this.delete("/api/employees/:id", (schema, request) => {
+                let id = request.params.id;
+
+                return schema.employees.find(id).destroy();
             });
         },
     });

@@ -1,5 +1,5 @@
 import mockData from "./db";
-import data from "../../data.json"
+import data from "../../data.json";
 const DATABASE_KEY = "joberDatabase";
 const initializeDatabase = () => {
     const localDatabaseString = localStorage.getItem(DATABASE_KEY);
@@ -41,7 +41,6 @@ export const addEmployee = (employee) => {
         id: id,
         code: code,
         hiringDate: date,
-        
     };
     console.log("newEmployee :>> ", newEmployee);
     newEmployees.push(newEmployee);
@@ -89,7 +88,6 @@ export const deleteEmployee = (id) => {
             employees: newEmployees,
         };
         saveDatabase(newDatabase);
-        console.log(newDatabase);
     }
 };
 

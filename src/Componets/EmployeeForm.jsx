@@ -56,6 +56,22 @@ function EntryForm() {
         }
     }, [id, setValue]);
 
+    const createEmp = (data) => {
+        fetch("/api/employees", {
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            method: "POST",
+            body: JSON.stringify(data),
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                console.log("data :>> ", data);
+                navigate("/");
+            });
+    };
+
     const onSubmit = (data) => {
         const newData = {
             ...data,
@@ -66,9 +82,8 @@ function EntryForm() {
             updateEmployee(id, newData);
             //create
         } else {
-            addEmployee(newData);
+            createEmp(newData);
         }
-        navigate("/");
     };
 
     return (

@@ -10,14 +10,6 @@ function EmployeeTablePage() {
     const navigate = useNavigate();
     const navigateTest = useNavigate();
 
-    const handleGet = () => {
-        fetch("/api/reminders")
-            .then((res) => res.json())
-            .then((data) => {
-                console.log(data);
-            });
-    };
-
     const handleTest = () => {
         navigateTest("/test");
     };
@@ -63,9 +55,6 @@ function EmployeeTablePage() {
             <EmployeeTable />
             <Button variant="contained" onClick={handleTest}>
                 test
-            </Button>
-            <Button variant="contained" onClick={handleGet}>
-                test 2
             </Button>
         </Container>
     );
