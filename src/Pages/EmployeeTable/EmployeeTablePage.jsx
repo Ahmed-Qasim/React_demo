@@ -4,15 +4,15 @@ import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router";
-import { useState } from "react";
+
 
 function EmployeeTablePage() {
     const navigate = useNavigate();
-    const navigateTest = useNavigate();
+    // const navigateTest = useNavigate();
 
-    const handleTest = () => {
-        navigateTest("/test");
-    };
+    // const handleTest = () => {
+    //     navigateTest("/test");
+    // };
     const handleClick = () => {
         navigate("/entry");
     };
@@ -48,14 +48,14 @@ function EmployeeTablePage() {
                 }}
             >
                 <Button variant="contained" onClick={handleClick}>
-                    Add{" "}
+                    Add
                 </Button>
             </Box>
 
             <EmployeeTable />
-            <Button variant="contained" onClick={handleTest}>
+            {/* <Button variant="contained" onClick={handleTest}>
                 test
-            </Button>
+            </Button> */}
         </Container>
     );
 }

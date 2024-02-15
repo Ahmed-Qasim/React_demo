@@ -28,8 +28,9 @@ const status = [
 
 function EntryForm() {
     const [loadingForm, setLoadingForm] = useState(true);
-    const navigate = useNavigate();
     const [jobCodes, setJobCodes] = useState(null);
+    const [loadingButton, setloadingButton] = useState(false);
+    const navigate = useNavigate();
     const { id } = useParams();
 
     const {
@@ -44,33 +45,29 @@ function EntryForm() {
         },
     });
 
-    const getJobCodes = () => {
-        fetch("/api/jobCodes")
-            .then((res) => res.json())
-            .then((data) => {
-                setJobCodes(data.jobCodes);
-            });
+    const getJobCodes = async () => {
+        const res = await fetch("/api/jobCodes");
+        const data = await res.json();
+        setJobCodes(data.jobCodes);
     };
-
-    useEffect(() => {
-        getJobCodes();
-
+    const getEmpById = async (id) => {
+        const res = await fetch(`/api/employees/${id}`);
+        const data = await res.json();
+        const employee = data.employee;
+        Object.keys(employee).forEach((key) => {
+            setValue(key, employee[key]);
+        });
+    };
+    const initializeForm = async () => {
+        await getJobCodes();
         if (id) {
-            getEmpById(id);
+            await getEmpById(id);
         }
-    }, [id]);
-
-    const getEmpById = (id) => {
-        fetch(`/api/employees/${id}`)
-            .then((res) => res.json())
-            .then((data) => {
-                const employee = data.employee;
-                Object.keys(employee).forEach((key) => {
-                    setValue(key, employee[key]);
-                });
-                setLoadingForm(false);
-            });
+        setLoadingForm(false);
     };
+    useEffect(() => {
+        initializeForm();
+    }, []);
 
     const updateEmp = (id, data) => {
         fetch(`/api/employees/${id}`, {
