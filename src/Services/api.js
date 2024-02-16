@@ -1,6 +1,6 @@
-import { createServer, Model } from "miragejs";
-import { addEmployee } from "./API";
-import database from "../Services/db.jsx";
+import { createServer, Model, Response } from "miragejs";
+
+import mockDatabase from "../Services/db.js";
 import { isEmpty } from "../utils.js";
 
 const createMockServer = function () {
@@ -11,10 +11,10 @@ const createMockServer = function () {
         },
 
         seeds(server) {
-            database.employees.forEach((employee) =>
+            mockDatabase.employees.forEach((employee) =>
                 server.create("employee", employee)
             );
-            database.jobCodes.forEach((jobCode) =>
+            mockDatabase.jobCodes.forEach((jobCode) =>
                 server.create("jobCode", jobCode)
             );
         },
@@ -33,13 +33,21 @@ const createMockServer = function () {
             this.get("/api/employees/:id", (schema, request) => {
                 let id = request.params.id;
 
-                return schema.employees.find(id);
+                const employee = schema.employees.find(id);
+                if (!employee) {
+                    return new Response(
+                        404,
+                        {},
+                        { error: "Employee not found" }
+                    );
+                }
+                return employee;
             });
 
             this.post("/api/employees", (schema, request) => {
                 let employee = JSON.parse(request.requestBody);
 
-                if (employee.code != null && employee.code !== "") {
+                if (employee.code) {
                     return schema.employees.create(employee);
                 } else {
                     let res = schema.db.employees;

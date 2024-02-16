@@ -45,12 +45,24 @@ function EntryForm() {
         setJobCodes(data.jobCodes);
     };
     const getEmpById = async (id) => {
-        const res = await fetch(`/api/employees/${id}`);
-        const data = await res.json();
-        const employee = data.employee;
-        Object.keys(employee).forEach((key) => {
-            setValue(key, employee[key]);
-        });
+        try {
+            const res = await fetch(`/api/employees/${id}`);
+
+            const data = await res.json();
+            if (res.ok) {
+                const employee = data.employee;
+                Object.keys(employee).forEach((key) => {
+                    setValue(key, employee[key]);
+                });
+            } else {
+                const error = data.error;
+                enqueueSnackbar(error, { variant: "error" });
+                navigate("/");
+            }
+        } catch (err) {
+            enqueueSnackbar(err.message, { variant: "error" });
+            navigate("/");
+        }
     };
     const initializeForm = async () => {
         await getJobCodes();
@@ -88,29 +100,35 @@ function EntryForm() {
             });
     };
 
-    const createEmp = (data) => {
-        setloadingButton(true);
-        fetch("/api/employees", {
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-            },
-            method: "POST",
-            body: JSON.stringify(data),
-        })
-            .then((res) => res.json())
-            .then(() => {
+    const createEmp = async (data) => {
+        try {
+            setloadingButton(true);
+            const res = await fetch("/api/employees", {
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                method: "POST",
+                body: JSON.stringify(data),
+            });
+            console.log("res :>> ", res);
+            const employee = await res.json();
+            if (res.ok) {
                 setloadingButton(false);
                 enqueueSnackbar("Employee created Successfully", {
                     variant: "success",
                 });
                 navigate("/");
-            })
-
-            .catch(() => {
+            } else {
                 setloadingButton(false);
-                enqueueSnackbar("Something went wrong", { variant: "error" });
-            });
+                const error = employee.error;
+                enqueueSnackbar(error, { variant: "error" });
+            }
+        } catch (err) {
+            setloadingButton(false);
+
+            enqueueSnackbar(err.message, { variant: "error" });
+        }
     };
 
     const onSubmit = (data) => {

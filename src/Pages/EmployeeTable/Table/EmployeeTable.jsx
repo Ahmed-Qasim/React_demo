@@ -59,7 +59,7 @@ const EmployeeTable = () => {
         {
             field: "name",
             headerName: "Name",
-            width: 250,
+            width: 220,
             editable: false,
             headerAlign: "center",
             align: "center",
