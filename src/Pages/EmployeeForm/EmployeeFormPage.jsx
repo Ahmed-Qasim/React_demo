@@ -1,4 +1,4 @@
-import { Typography, Container} from "@mui/material";
+import { Typography, Container, Paper } from "@mui/material";
 import EntryForm from "../../Componets/EmployeeForm";
 import { useParams } from "react-router-dom";
 
@@ -8,8 +8,11 @@ function EmployeeFormPage() {
         <>
             <Container
                 sx={{
-                    marginTop: 5,
                     marginBottom: 5,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
                 }}
             >
                 {id ? (
@@ -21,8 +24,9 @@ function EmployeeFormPage() {
                         Add Employee
                     </Typography>
                 )}
-
-                <EntryForm />
+                <Paper>
+                    <EntryForm />
+                </Paper>
             </Container>
         </>
     );

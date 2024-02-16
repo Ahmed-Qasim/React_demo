@@ -1,5 +1,5 @@
 import mockData from "./db";
-import data from "../../data.json";
+
 const DATABASE_KEY = "joberDatabase";
 const initializeDatabase = () => {
     const localDatabaseString = localStorage.getItem(DATABASE_KEY);
@@ -91,20 +91,7 @@ export const deleteEmployee = (id) => {
     }
 };
 
-// Filter Employees
 
-// export const filterEmployees = (criteria) => {
-//     return database.employees.filter((employee) => {
-//         for (const key in criteria) {
-//             if (criteria.hasOwnProperty(key)) {
-//                 if (employee[key] !== criteria[key]) {
-//                     return false;
-//                 }
-//             }
-//         }
-//         return true;
-//     });
-// };
 
 export const getEmployees = (filterObject) => {
     const { employees } = database;

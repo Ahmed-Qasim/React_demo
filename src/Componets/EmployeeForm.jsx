@@ -1,14 +1,10 @@
-import { Button, TextField, Stack, MenuItem, Box } from "@mui/material";
+import { TextField, Stack, MenuItem, Box, Snackbar, Fade } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
+import { useSnackbar } from "notistack";
 import dayjs from "dayjs";
 import { DatePicker } from "@mui/x-date-pickers";
 import { useForm, Controller } from "react-hook-form";
 import LinearProgress from "@mui/material/LinearProgress";
-import {
-    addEmployee,
-    getEmployeeById,
-    getJobCodes,
-    updateEmployee,
-} from "../Services/API.jsx";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -30,8 +26,22 @@ function EntryForm() {
     const [loadingForm, setLoadingForm] = useState(true);
     const [jobCodes, setJobCodes] = useState(null);
     const [loadingButton, setloadingButton] = useState(false);
+    // const [toasterState, setToasterState] = useState({
+    //     open: false,
+    //     Transition: Fade,
+    //     message: "I love toast",
+    // });
+    const { enqueueSnackbar } = useSnackbar();
     const navigate = useNavigate();
     const { id } = useParams();
+
+    //Handle toaster
+    const handleClose = () => {
+        setToasterState({
+            ...toasterState,
+            open: false,
+        });
+    };
 
     const {
         register,
@@ -41,7 +51,7 @@ function EntryForm() {
         formState: { errors },
     } = useForm({
         defaultValues: {
-            salaryStatus: "unvalid",
+            salaryStatus: "valid",
         },
     });
 
@@ -79,8 +89,16 @@ function EntryForm() {
             body: JSON.stringify(data),
         })
             .then((res) => res.json())
+            .then(setloadingButton(true))
+            .then(
+                enqueueSnackbar("updated successfully", { variant: "success" })
+            )
             .then(() => {
                 navigate("/");
+            })
+
+            .catch(() => {
+                enqueueSnackbar("something went wrong", { variant: "error" });
             });
     };
 
@@ -94,8 +112,16 @@ function EntryForm() {
             body: JSON.stringify(data),
         })
             .then((res) => res.json())
+            .then(setloadingButton(true))
+            .then(
+                enqueueSnackbar("Created Successfully", { variant: "success" })
+            )
             .then(() => {
                 navigate("/");
+            })
+
+            .catch(() => {
+                enqueueSnackbar("Something went wrong", { variant: "error" });
             });
     };
 
@@ -107,6 +133,7 @@ function EntryForm() {
         // update
         if (id) {
             updateEmp(id, newData);
+
             //create
         } else {
             createEmp(newData);
@@ -123,16 +150,24 @@ function EntryForm() {
         <>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Stack
-                    width={500}
+                    width={400}
                     spacing={2}
                     sx={{
-                        borderRadius: "10px",
-                        borderColor: "text.disabled",
                         padding: 5,
-                        border: 1,
-                        bgcolor: "background.paper",
                     }}
                 >
+                    {/* <Snackbar
+                        open={toasterState.open}
+                        anchorOrigin={{
+                            vertical: "top",
+                            horizontal: "right",
+                        }}
+                        onClose={handleClose}
+                        TransitionComponent={toasterState.Transition}
+                        key={toasterState.Transition.name}
+                        message={toasterState.message}
+                        autoHideDuration={20000}
+                    /> */}
                     <TextField
                         id="outlined-basic"
                         {...register("name", {
@@ -150,14 +185,7 @@ function EntryForm() {
                         helperText={errors?.name?.message}
                     />
                     <TextField
-                        {...register("code", {
-                            // required: "Code is required",
-                            // maxLength: {
-                            //     value: 5,
-                            //     message:
-                            //         "Code must be at most 5 characters long",
-                            // },
-                        })}
+                        {...register("code", {})}
                         id="outlined-basic"
                         label="Code"
                         type="number"
@@ -224,21 +252,23 @@ function EntryForm() {
                         </TextField>
                     )}
                     {id ? (
-                        <Button
+                        <LoadingButton
+                            loading={loadingButton}
+                            loadingIndicator="Updating..."
                             variant="outlined"
-                            color="primary"
                             type="submit"
                         >
                             Update
-                        </Button>
+                        </LoadingButton>
                     ) : (
-                        <Button
+                        <LoadingButton
+                            loading={loadingButton}
+                            loadingIndicator="Adding..."
                             variant="outlined"
-                            color="primary"
                             type="submit"
                         >
-                            Create
-                        </Button>
+                            Add
+                        </LoadingButton>
                     )}
                 </Stack>
             </form>
