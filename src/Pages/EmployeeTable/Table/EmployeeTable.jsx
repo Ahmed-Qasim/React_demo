@@ -6,7 +6,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import UserActions from "./UserActions";
-import { isEmpty } from "../../utils";
+import { isEmpty } from "../../../utils";
 import LinearProgress from "@mui/material/LinearProgress";
 
 function CustomToolbar() {
@@ -59,7 +59,7 @@ const EmployeeTable = () => {
         {
             field: "name",
             headerName: "Name",
-            width: 150,
+            width: 250,
             editable: false,
             headerAlign: "center",
             align: "center",
@@ -101,15 +101,12 @@ const EmployeeTable = () => {
             align: "center",
             type: "actions",
             disableColumnMenu: true,
-            renderCell: (params) => {
-                //  console.log(params);
-                return (
-                    <UserActions
-                        row={params.row}
-                        fetchEmployeeFiles={fetchEmployeeFiles}
-                    />
-                );
-            },
+            renderCell: (params) => (
+                <UserActions
+                    row={params.row}
+                    fetchEmployeeFiles={fetchEmployeeFiles}
+                />
+            ),
         },
     ];
 
@@ -126,19 +123,10 @@ const EmployeeTable = () => {
                 toolbar: CustomToolbar,
                 loadingOverlay: LinearProgress,
             }}
-            initialState={{
-                pagination: {
-                    paginationModel: {
-                        pageSize: 5,
-                    },
-                },
-            }}
             loading={loading}
             pageSizeOptions={[5]}
-            checkboxSelection
             disableRowSelectionOnClick
             onFilterModelChange={onFiltersChange}
-            on
             filterMode="server"
         />
     );

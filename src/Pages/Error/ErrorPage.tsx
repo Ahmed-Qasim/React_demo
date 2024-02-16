@@ -4,7 +4,6 @@ import EmployeeTable from "../../Componets/EmployeeTable";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import "./ErrorPage.css";
 import { useRouteError } from "react-router-dom";
 
 function ErrorPage() {
