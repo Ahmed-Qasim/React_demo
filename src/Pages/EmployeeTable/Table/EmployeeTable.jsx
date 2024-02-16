@@ -66,7 +66,7 @@ const EmployeeTable = () => {
         },
         {
             field: "salaryStatus",
-            headerName: "Salay Status",
+            headerName: "Salary Status",
             width: 150,
             editable: false,
             headerAlign: "center",
