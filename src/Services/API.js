@@ -1,6 +1,6 @@
 import { createServer, Model, Response } from "miragejs";
 
-import mockDatabase from "../Services/db.js";
+import mockDatabase from "./db.js";
 import { isEmpty } from "../utils.js";
 
 const createMockServer = function () {
