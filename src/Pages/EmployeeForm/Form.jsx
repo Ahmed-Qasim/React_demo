@@ -1,4 +1,4 @@
-import { TextField, Stack, MenuItem, Box, Snackbar, Fade } from "@mui/material";
+import { TextField, Stack, MenuItem, Box, Autocomplete } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useSnackbar } from "notistack";
 import dayjs from "dayjs";
@@ -7,7 +7,8 @@ import { useForm, Controller } from "react-hook-form";
 import LinearProgress from "@mui/material/LinearProgress";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
+import { isEmpty } from "../../utils";
 
 dayjs.locale("en");
 
@@ -26,11 +27,12 @@ function EntryForm() {
     const [loadingForm, setLoadingForm] = useState(true);
     const [jobCodes, setJobCodes] = useState(null);
     const [loadingButton, setloadingButton] = useState(false);
+    const [codeOptions, setcodeOptions] = useState([]);
 
     const { enqueueSnackbar } = useSnackbar();
     const navigate = useNavigate();
     const { id } = useParams();
-
+    const location = useLocation();
     const {
         register,
         handleSubmit,
@@ -38,6 +40,19 @@ function EntryForm() {
         control,
         formState: { errors },
     } = useForm();
+
+    const fetchEmployeeFiles = async (filterObject) => {
+        const URL =
+            "/api/employees" +
+            (filterObject && !isEmpty(filterObject)
+                ? "?" + new URLSearchParams(filterObject)
+                : "");
+
+        const response = await fetch(URL);
+        const data = await response.json();
+
+        setcodeOptions(data.employees);
+    };
 
     const getJobCodes = async () => {
         const res = await fetch("/api/jobCodes");
@@ -48,7 +63,7 @@ function EntryForm() {
         try {
             const res = await fetch(`/api/employees/${id}`);
 
-            const data = await res.json();
+        const data = await res.json();
             if (res.ok) {
                 const employee = data.employee;
                 Object.keys(employee).forEach((key) => {
@@ -64,7 +79,13 @@ function EntryForm() {
             navigate("/");
         }
     };
+
+    const handleEmployeeSelect = (value) => {
+        // console.log("location :>> ", location);
+        navigate("/employees/" + value.id);
+    };
     const initializeForm = async () => {
+        setLoadingForm(true);
         await getJobCodes();
         if (id) {
             await getEmpById(id);
@@ -73,7 +94,7 @@ function EntryForm() {
     };
     useEffect(() => {
         initializeForm();
-    }, []);
+    }, [id]);
 
     const updateEmp = (id, data) => {
         setloadingButton(true);
@@ -87,7 +108,7 @@ function EntryForm() {
         })
             .then((res) => res.json())
             .then(() => {
-                setloadingButton(false);
+                // setloadingButton(false);
                 enqueueSnackbar("Employee updated successfully", {
                     variant: "success",
                 });
@@ -155,6 +176,30 @@ function EntryForm() {
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <Stack spacing={2}>
+                <Autocomplete
+                    {...register("code")}
+                    disablePortal
+                    freeSolo
+                    id="combo-box-demo"
+                    getOptionLabel={(employee) => `${employee.code}`}
+                    size="small"
+                    onChange={(event, newValue) =>
+                        handleEmployeeSelect(newValue)
+                    }
+                    options={codeOptions}
+                    renderInput={(params) => (
+                        <TextField
+                            onChange={(e) =>
+                                fetchEmployeeFiles({ code: e.target.value })
+                            }
+                            {...params}
+                            error={!!errors.code}
+                            helperText={errors?.code?.message}
+                            label="Code"
+                        />
+                    )}
+                />
+               
                 <TextField
                     id="outlined-basic"
                     {...register("name", {
@@ -169,15 +214,6 @@ function EntryForm() {
                     size="small"
                     error={!!errors.name}
                     helperText={errors?.name?.message}
-                />
-                <TextField
-                    {...register("code")}
-                    id="outlined-basic"
-                    label="Code"
-                    type="number"
-                    size="small"
-                    error={!!errors.code}
-                    helperText={errors?.code?.message}
                 />
 
                 <TextField

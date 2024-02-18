@@ -7,6 +7,6 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
 import App from "./App";
-import createMockServer from "./Services/api";
+import createMockServer from "./Services/API";
 createMockServer();
 ReactDOM.createRoot(document.getElementById("root")).render(<App />);
