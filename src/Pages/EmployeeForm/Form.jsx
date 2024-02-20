@@ -23,9 +23,24 @@ const status = [
     },
 ];
 
+const  jobCodes= [
+    {
+        value: "1243",
+        label: "1243",
+    },
+    {
+        value: "5712",
+        label: "5712",
+    },
+    {
+        value: "8762",
+        label: "8762",
+    },
+];
+
 function EntryForm() {
     const [loadingForm, setLoadingForm] = useState(true);
-    const [jobCodes, setJobCodes] = useState(null);
+    // const [jobCodes, setJobCodes] = useState(null);
     const [loadingButton, setloadingButton] = useState(false);
     const [codeOptions, setcodeOptions] = useState([]);
 
@@ -54,11 +69,11 @@ function EntryForm() {
         setcodeOptions(data.employees);
     };
 
-    const getJobCodes = async () => {
-        const res = await fetch("/api/jobCodes");
-        const data = await res.json();
-        setJobCodes(data.jobCodes);
-    };
+    // const getJobCodes = async () => {
+    //     const res = await fetch("/api/jobCodes");
+    //     const data = await res.json();
+    //     setJobCodes(data.jobCodes);
+    // };
     const getEmpById = async (id) => {
         try {
             const res = await fetch(`/api/employees/${id}`);
@@ -86,7 +101,7 @@ function EntryForm() {
     };
     const initializeForm = async () => {
         setLoadingForm(true);
-        await getJobCodes();
+        // await getJobCodes();
         if (id) {
             await getEmpById(id);
         }
@@ -124,7 +139,7 @@ function EntryForm() {
     const createEmp = async (data) => {
         try {
             setloadingButton(true);
-            const res = await fetch("/api/employees", {
+            const res = await fetch("https://localhost:7025/api/Employee", {
                 headers: {
                     Accept: "application/json",
                     "Content-Type": "application/json",

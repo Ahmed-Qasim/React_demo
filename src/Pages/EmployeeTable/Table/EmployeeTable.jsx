@@ -29,16 +29,35 @@ const EmployeeTable = () => {
     const [rows, setRows] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const fetchEmployeeFiles = async (filterObject) => {
-        const URL =
-            "/api/employees" +
-            (filterObject && !isEmpty(filterObject)
-                ? "?" + new URLSearchParams(filterObject)
-                : "");
+    // const fetchEmployeeFiles = async (filterObject) => {
+    //     const URL =
+    //         "https://localhost:7025/api/Employee" +
+    //         (filterObject && !isEmpty(filterObject)
+    //             ? "?" + new URLSearchParams(filterObject)
+    //             : "");
 
+    //     const response = await fetch(URL);
+    //     const data = await response.json();
+    //     console.log("data :>> ", data);
+    //     setRows(data);
+    //     setLoading(false);
+    // };
+
+    const fetchEmployeeFiles = async (filterObject) => {
+       
+        const URL =
+            "https://localhost:7025/api/Employee" +
+            (filterObject && !isEmpty(filterObject)
+                ? "?" +
+                  `$filter=contains(${Object.keys(filterObject)[0]}, '${
+                      filterObject[Object.keys(filterObject)[0]]
+                  }')`
+                : "");
+      
         const response = await fetch(URL);
         const data = await response.json();
-        setRows(data.employees);
+
+        setRows(data);
         setLoading(false);
     };
 
