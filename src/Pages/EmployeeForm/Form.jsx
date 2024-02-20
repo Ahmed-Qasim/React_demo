@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { isEmpty } from "../../utils";
+import CodeAutoComplete from "./CodeAutoComplete";
 
 dayjs.locale("en");
 
@@ -23,7 +24,7 @@ const status = [
     },
 ];
 
-const  jobCodes= [
+const jobCodes = [
     {
         value: "1243",
         label: "1243",
@@ -42,7 +43,6 @@ function EntryForm() {
     const [loadingForm, setLoadingForm] = useState(true);
     // const [jobCodes, setJobCodes] = useState(null);
     const [loadingButton, setloadingButton] = useState(false);
-    const [codeOptions, setcodeOptions] = useState([]);
 
     const { enqueueSnackbar } = useSnackbar();
     const navigate = useNavigate();
@@ -56,31 +56,22 @@ function EntryForm() {
         formState: { errors },
     } = useForm();
 
-    const fetchEmployeeFiles = async (filterObject) => {
-        const URL =
-            "/api/employees" +
-            (filterObject && !isEmpty(filterObject)
-                ? "?" + new URLSearchParams(filterObject)
-                : "");
-
-        const response = await fetch(URL);
-        const data = await response.json();
-
-        setcodeOptions(data.employees);
-    };
-
     // const getJobCodes = async () => {
     //     const res = await fetch("/api/jobCodes");
     //     const data = await res.json();
     //     setJobCodes(data.jobCodes);
     // };
+
     const getEmpById = async (id) => {
         try {
-            const res = await fetch(`/api/employees/${id}`);
+            const res = await fetch(
+                `https://localhost:7025/api/Employee/${id}`
+            );
 
-        const data = await res.json();
+            const data = await res.json();
+            const employee = data[0];
+            console.log("data :>> ", employee);
             if (res.ok) {
-                const employee = data.employee;
                 Object.keys(employee).forEach((key) => {
                     setValue(key, employee[key]);
                 });
@@ -95,13 +86,9 @@ function EntryForm() {
         }
     };
 
-    const handleEmployeeSelect = (value) => {
-        // console.log("location :>> ", location);
-        navigate("/employees/" + value.id);
-    };
     const initializeForm = async () => {
         setLoadingForm(true);
-        // await getJobCodes();
+
         if (id) {
             await getEmpById(id);
         }
@@ -139,16 +126,26 @@ function EntryForm() {
     const createEmp = async (data) => {
         try {
             setloadingButton(true);
+
+            const normalizedData = {
+                ...data,
+                ...(data.code && { code: parseInt(data.code) }),
+            };
+            if (!normalizedData.code) {
+                delete normalizedData.code;
+            }
+            console.log("normalizedData :>> ", normalizedData);
             const res = await fetch("https://localhost:7025/api/Employee", {
                 headers: {
                     Accept: "application/json",
                     "Content-Type": "application/json",
                 },
                 method: "POST",
-                body: JSON.stringify(data),
+                body: JSON.stringify(normalizedData),
             });
-            console.log("res :>> ", res);
+
             const employee = await res.json();
+            console.log("res :>> ", employee);
             if (res.ok) {
                 setloadingButton(false);
                 enqueueSnackbar("Employee created Successfully", {
@@ -191,30 +188,8 @@ function EntryForm() {
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <Stack spacing={2}>
-                <Autocomplete
-                    {...register("code")}
-                    disablePortal
-                    freeSolo
-                    id="combo-box-demo"
-                    getOptionLabel={(employee) => `${employee.code}`}
-                    size="small"
-                    onChange={(event, newValue) =>
-                        handleEmployeeSelect(newValue)
-                    }
-                    options={codeOptions}
-                    renderInput={(params) => (
-                        <TextField
-                            onChange={(e) =>
-                                fetchEmployeeFiles({ code: e.target.value })
-                            }
-                            {...params}
-                            error={!!errors.code}
-                            helperText={errors?.code?.message}
-                            label="Code"
-                        />
-                    )}
-                />
-               
+                <CodeAutoComplete control={control} />
+
                 <TextField
                     id="outlined-basic"
                     {...register("name", {

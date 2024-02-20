@@ -44,7 +44,6 @@ const EmployeeTable = () => {
     // };
 
     const fetchEmployeeFiles = async (filterObject) => {
-       
         const URL =
             "https://localhost:7025/api/Employee" +
             (filterObject && !isEmpty(filterObject)
@@ -53,7 +52,7 @@ const EmployeeTable = () => {
                       filterObject[Object.keys(filterObject)[0]]
                   }')`
                 : "");
-      
+
         const response = await fetch(URL);
         const data = await response.json();
 
@@ -143,7 +142,7 @@ const EmployeeTable = () => {
                 loadingOverlay: LinearProgress,
             }}
             loading={loading}
-            pageSizeOptions={[5]}
+            pageSizeOptions={[5, 100]}
             disableRowSelectionOnClick
             onFilterModelChange={onFiltersChange}
             filterMode="server"
