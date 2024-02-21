@@ -42,10 +42,11 @@ const EmployeeTable = () => {
     //     setRows(data);
     //     setLoading(false);
     // };
-
+    const base = import.meta.env.VITE_BASE_URL;
+    console.log("base :>> ", base);
     const fetchEmployeeFiles = async (filterObject) => {
         const URL =
-            "https://localhost:7025/api/Employee" +
+            `${import.meta.env.VITE_BASE_URL}/api/Employee` +
             (filterObject && !isEmpty(filterObject)
                 ? "?" +
                   `$filter=contains(${Object.keys(filterObject)[0]}, '${

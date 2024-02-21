@@ -8,7 +8,6 @@ import LinearProgress from "@mui/material/LinearProgress";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
-import { isEmpty } from "../../utils";
 import CodeAutoComplete from "./CodeAutoComplete";
 
 dayjs.locale("en");
@@ -65,7 +64,7 @@ function EntryForm() {
     const getEmpById = async (id) => {
         try {
             const res = await fetch(
-                `https://localhost:7025/api/Employee/${id}`
+                `${import.meta.env.VITE_BASE_URL}/api/Employee/${id}`
             );
 
             const data = await res.json();
@@ -100,7 +99,7 @@ function EntryForm() {
 
     const updateEmp = (id, data) => {
         setloadingButton(true);
-        fetch(`/api/employees/${id}`, {
+        fetch(`${import.meta.env.VITE_BASE_URL}/api/Employee?key=${id}`, {
             headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json",
@@ -108,8 +107,11 @@ function EntryForm() {
             method: "PUT",
             body: JSON.stringify(data),
         })
-            .then((res) => res.json())
+            .then((res) => {
+                console.log('res :>> ', res);
+                res.json()})
             .then(() => {
+
                 // setloadingButton(false);
                 enqueueSnackbar("Employee updated successfully", {
                     variant: "success",
@@ -135,7 +137,7 @@ function EntryForm() {
                 delete normalizedData.code;
             }
             console.log("normalizedData :>> ", normalizedData);
-            const res = await fetch("https://localhost:7025/api/Employee", {
+            const res = await fetch(`${import.meta.env.VITE_BASE_URL}/api/Employee`, {
                 headers: {
                     Accept: "application/json",
                     "Content-Type": "application/json",

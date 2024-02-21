@@ -13,7 +13,7 @@ export default function CodeAutoComplete({ control }) {
 
     const filterEmployeesWithCode = async (code) => {
         const URL =
-            "https://localhost:7025/api/Employee?$filter=code eq " + code;
+            `${import.meta.env.VITE_BASE_URL}/api/Employee?$filter=code eq ` + code;
         const response = await fetch(URL);
         const data = await response.json();
         setEmployees(data);
@@ -50,6 +50,7 @@ export default function CodeAutoComplete({ control }) {
                             onChange={(e) => {
                                 const codeValue = parseInt(e.target.value);
                                 filterEmployeesWithCode(codeValue);
+                                onChange(e.target.value);
                             }}
                             inputProps={{
                                 ...params.inputProps,

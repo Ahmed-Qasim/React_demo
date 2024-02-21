@@ -9,11 +9,9 @@ function UserActions(props) {
     const [loading, setLoading] = useState(false);
     const id = row.id;
 
-   
-
     const onDelete = async () => {
         setLoading(true);
-        await fetch(`https://localhost:7025/api/Employee?key=${id}`, {
+        await fetch(`${import.meta.env.VITE_BASE_URL}/api/Employee?key=${id}`, {
             method: "DELETE",
         });
         await fetchEmployeeFiles();
